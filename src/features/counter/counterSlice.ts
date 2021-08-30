@@ -1,0 +1,27 @@
+import { createSlice } from "@reduxjs/toolkit";
+
+interface CounterState {
+  value: number;
+}
+
+const initialState: CounterState = { value: 0 };
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState,
+  reducers: {
+    increment(state) {
+      // we can mutate the state like this because
+      // createSlice uses immer under the hood
+      // as opposed of doing the usual {...state, value: state.value +1}
+      state.value++;
+    },
+    decrement(state) {
+      state.value--;
+    },
+  },
+});
+
+export const { increment } = counterSlice.actions;
+
+export default counterSlice.reducer;
