@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import {
@@ -6,12 +6,19 @@ import {
   increment,
   incrementBy,
 } from "./features/counter/counterSlice";
+import { useFetchItemsQuery } from "./features/items/itemsApiSlice";
 import logo from "./logo.svg";
 
 function App() {
+  const [numItems, setNumItems] = useState(50);
+
+  const { data = [], isLoading } = useFetchItemsQuery(numItems);
+
   const count = useAppSelector((state) => state.counter.value);
 
   const dispatch = useAppDispatch();
+
+  if (isLoading && !data) return <div>loading data...</div>;
 
   return (
     <div className="App">
@@ -29,6 +36,31 @@ function App() {
         <p>
           <button onClick={() => dispatch(incrementBy(4))}>incrementBy</button>
         </p>
+        <div>Items here: </div>
+        <div>
+          <p>items to fetch</p>
+          <select
+            value={numItems}
+            onChange={(e) => setNumItems(Number(e.target.value))}
+          >
+            <option value="55">55</option>
+            <option value="60">60</option>
+            <option value="70">70</option>
+            <option value="90">90</option>
+          </select>
+        </div>
+        <p>number of items : {data.length}</p>
+        {data.map((item) => (
+          <div key={item.id}>
+            <div>
+              <p>{item.name}</p>
+            </div>
+            <div>
+              <p>rarity: {item.rarity}</p>
+            </div>
+            <img src={item.icon} style={{ width: "50px", height: "50px" }} />
+          </div>
+        ))}
         <p>
           Edit <code>App.tsx</code> and save to test HMR updates.
         </p>
